@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_22_211258) do
+ActiveRecord::Schema.define(version: 2020_04_23_210701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,10 +34,41 @@ ActiveRecord::Schema.define(version: 2020_04_22_211258) do
     t.index ["title", "artist_id"], name: "index_artworks_on_title_and_artist_id", unique: true
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.text "body", null: false
+    t.integer "user_id", null: false
+    t.integer "artwork_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artwork_id"], name: "index_comments_on_artwork_id"
+    t.index ["body"], name: "index_comments_on_body"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "favorites", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "artwork_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "artwork_id"], name: "index_favorites_on_user_id_and_artwork_id", unique: true
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "likable_id", null: false
+    t.string "likable_type", null: false
+    t.index ["likable_id", "likable_type"], name: "index_likes_on_likable_id_and_likable_type", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "favorite_id"
+    t.index ["favorite_id"], name: "index_users_on_favorite_id"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

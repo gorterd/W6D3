@@ -12,9 +12,24 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :show, :update, :create, :destroy] do
     resources :artworks, only: [:index]
+    resources :comments, only: [:index]
+    resources :likes, only: :index
+
+    member do
+      patch 'set_favorite'
+      get 'get_favorite'
+    end
+
+  end
+  
+  resources :artworks, only: [:show, :update, :create, :destroy] do
+    resources :comments, only: [:index]
+    resources :likes, only: :index
   end
 
-  resources :artworks, only: [:show, :update, :create, :destroy]
-
   resources :artwork_shares, only: [:index, :create, :destroy]
+
+  resources :comments, only: [:index, :create, :destroy]
+
+  resources :likes, only: [:index, :create, :destroy]
 end

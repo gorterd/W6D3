@@ -1,8 +1,28 @@
 class UsersController < ApplicationController
    def index
-        @users = User.all
-        render json: @users
+          if params.has_key?("username")
+               @users = User.where("username LIKE ?", "%#{params[:username]}%")
+          else
+               @users = User.all
+          end
+          render json: @users
    end 
+
+   def get_favorite
+          @fave = User.find(params[:id]).favorite
+          
+          render json: @fave
+   end
+
+   def set_favorite
+          @user = User.find(params[:id])
+          @user.favorite_id = params[:favorite_id]
+          if @user.save
+               render json:@user.favorite
+          else
+               render json: @user.errors.full_messages, status: 422
+          end
+   end
 
    def create
         @user = User.new(user_params)
@@ -19,8 +39,6 @@ class UsersController < ApplicationController
         @user = User.find(params[:id])
         render json: @user
    end
-
-
 
    def update
         @user = User.find(params[:id])

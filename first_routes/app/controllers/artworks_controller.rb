@@ -2,6 +2,7 @@ class ArtworksController < ApplicationController
 
     def index
         #users/:user_id/artworks
+    
         @artworks = Artwork.joins(:artwork_shares).where("artworks.artist_id = #{params[:user_id]} OR artwork_shares.viewer_id = #{params[:user_id]}")
         
         render json: @artworks
@@ -36,7 +37,8 @@ class ArtworksController < ApplicationController
         @artwork = Artwork.find(params[:id])
         @artwork.destroy 
 
-        redirect_to artworks_url
+        render json: @artwork
+        # /artworks
     end
 
     private
